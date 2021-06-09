@@ -17,6 +17,7 @@ packages:
   mpich:
     version: [3.3.2]
   openmpi:
+    variants: +pmi +legacylaunchers schedulers=slurm fabrics=ucx,ofi
     version: [4.0.5]
   proj:
     version: [7.2.1]

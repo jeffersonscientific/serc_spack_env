@@ -59,9 +59,10 @@ cp defaults/packages.yaml spack/etc/spack/defaults/packages.yaml
 #source the spack environment
 source spack/share/spack/setup-env.sh
 
-#install compilers
-spack install -j${CORECOUNT} gcc@10.1.0%gcc@4.8.5 target=${ARCH}
-spack install -j${CORECOUNT} intel-oneapi-compilers@2021.2.0%gcc@4.8.5 target=${ARCH}
+#install compilers 
+#fix was added due to zen2 not having optimizations w/ 4.8.5 compiler
+spack install -j${CORECOUNT} gcc@10.1.0%gcc@4.8.5 target=x86_64
+spack install -j${CORECOUNT} intel-oneapi-compilers@2021.2.0%gcc@4.8.5 target=x86_64
 
 #now add the compilers - gcc
 spack compiler find `spack location --install-dir gcc@10.1.0`
@@ -106,3 +107,12 @@ done
 
 
 #################END_OF_SOFTWARE_INSTALLS####################################
+
+
+#have spack regenerate module files:
+
+spack module lmod refresh --delete-tree -y
+
+
+exit 0
+

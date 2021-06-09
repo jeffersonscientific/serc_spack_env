@@ -1,4 +1,11 @@
 modules:
+  prefix_inspections:
+    bin:
+      - PATH
+    lib:
+      - LIBRARY_PATH
+    include:
+      - CPATH
   enable::
     - lmod
   lmod:
