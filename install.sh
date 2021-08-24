@@ -8,8 +8,13 @@
 #SBATCH --mem-per-cpu=2G
 #SBATCH -p serc,normal
 ##SBATCH -C CPU_MNF:INTEL
-
-
+#
+# NOTE: At this time, I think this will not parallelize across nodes, but
+#   we need to look into this more carefully.
+NPES=8
+if [[ ! -z ${SLURM_CPUS_PER_TASK} ]]; then
+	NPES=$${SLURM_CPUS_PER_TASK}
+fi
 
 # This is the general install script for SERC on the Sherlock HPC system @ Stanford.
 # 
@@ -19,8 +24,11 @@
 
 
 #global variables
-CORECOUNT=8 #main core count for compiling jobs
+CORECOUNT=${NPES} #main core count for compiling jobs
 ARCH="x86_64" #this is the main target, select either x86_64, zen2, or skylake_avx512
+if [[ ! -z $1 ]]; then
+	ARCH=$1
+fi
 
 #the compilers we will need.
 compilers=(
@@ -56,7 +64,7 @@ cp defaults/modules.yaml spack/etc/spack/defaults/modules.yaml
 cp defaults/packages.yaml spack/etc/spack/defaults/packages.yaml
 
 
-#source the spack environment
+#source the spack environment from relative path
 source spack/share/spack/setup-env.sh
 
 #install compilers 
