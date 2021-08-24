@@ -12,6 +12,9 @@
 # NOTE: At this time, I think this will not parallelize across nodes, but
 #   we need to look into this more carefully.
 NPES=8
+if [[ ! -z $2 ]]; then
+	NPES=$2
+fi
 if [[ ! -z ${SLURM_CPUS_PER_TASK} ]]; then
 	NPES=$${SLURM_CPUS_PER_TASK}
 fi
@@ -29,6 +32,9 @@ ARCH="x86_64" #this is the main target, select either x86_64, zen2, or skylake_a
 if [[ ! -z $1 ]]; then
 	ARCH=$1
 fi
+
+echo "*** Building for ARCH=${ARCH}; CPUs=${CORECOUNT}"
+exit 1
 
 #the compilers we will need.
 compilers=(
