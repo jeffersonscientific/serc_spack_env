@@ -13,7 +13,7 @@ packages:
     version: [6.2]
   petsc:
     version: [3.15.0]
-    variants: +fftw
+    variants: +hypre+fftw+mumps+hdf5
   mpich:
     version: [3.3.2]
   openmpi:
@@ -77,7 +77,12 @@ packages:
   intel-oneapi-mkl:
     version: [2020.4.304]
   intel-oneapi-compilers:
-    version: [2021.1.0]
+    version: [2021.2.0]
+  blitz:
+    version: [1.0.2]
+  xios:
+    version: [2.5]
+>>>>>>> 6ab3989489bce3c8aa48fe1f001ac53aa49e3110
   all:
     compiler: [gcc@10.1.0, intel@20.0.2]
     variants: build_type=Release +mpi
