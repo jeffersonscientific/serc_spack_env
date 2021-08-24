@@ -86,7 +86,11 @@ do
     spack install -j${CORECOUNT} swig $compiler target=${ARCH}
     spack install -j${CORECOUNT} maven $compiler target=${ARCH}
     spack install -j${CORECOUNT} geos $compiler target=${ARCH}
-
+    #
+    # yoder:
+    spack install -j${CORECOUNT} intel-oneapi-tbb $compiler target=${ARCH}
+	spack install -j${CORECOUNT} intel-oneapi-mkl $compiler target=${ARCH}
+    	
     # Parallel installs
     for mpi in "${mpis[@]}"
     do
@@ -102,6 +106,9 @@ do
 		spack install -j${CORECOUNT} parallelio $compiler ^$mpi target=${ARCH}
 		spack install -j${CORECOUNT} dealii $compiler ^$mpi target=${ARCH}
 		spack install -j${CORECOUNT} cgal $compiler ^$mpi target=${ARCH}
+		#
+		# yoder:
+		spack install -j${CORECOUNT} xios $compiler ^$mpi target=${ARCH}
     done
 done
 

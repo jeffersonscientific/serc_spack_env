@@ -70,10 +70,16 @@ packages:
     version: [9.0.0]
   dealii:
     version: [9.2.0]
+  xios:
+    version: [2.5]
+  intel-oneapi-tbb:
+    version: [2021.1.1]
+  intel-oneapi-mkl:
+    version: [2020.4.304]
   intel-oneapi-compilers:
-    version: [2021.2.0]
+    version: [2021.1.0]
   all:
-    compiler: [gcc@10.1.0, intel@19.0.0.117]
+    compiler: [gcc@10.1.0, intel@20.0.2]
     variants: build_type=Release +mpi
     providers:
       mpi: [openmpi, mpich]
