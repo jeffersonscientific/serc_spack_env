@@ -37,7 +37,7 @@ packages:
     version: [3.3.9]
   hdf5:
     variants: ~cxx~debug+fortran+hl~java+mpi+pic+shared~szip+threadsafe
-    version: [1.12.0]
+    version: [1.12.0,1.10.7]
   netcdf-c:
     version: [4.7.4]
   netcdf-cxx4:
@@ -82,9 +82,8 @@ packages:
     version: [1.0.2]
   xios:
     version: [2.5]
->>>>>>> 6ab3989489bce3c8aa48fe1f001ac53aa49e3110
   all:
-    compiler: [gcc@10.1.0, intel@20.0.2]
+    compiler: [gcc@11.2.0, intel@20.0.2]
     variants: build_type=Release +mpi
     providers:
       mpi: [openmpi, mpich]
@@ -112,6 +111,7 @@ packages:
       unwind: [libunwind]
       yacc: [bison]
       uuid: [libuuid]
+      hdf5: [hdf5@1.12.0,hdf5@1.10.7]
     permissions:
       read: world
       write: user
