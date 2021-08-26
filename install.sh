@@ -41,9 +41,9 @@ echo "*** Building for ARCH=${ARCH}; CPUs=${CORECOUNT}"
 #exit 1
 
 #the compilers we will need.
-#     %intel@${INTEL_VER}
 compilers=(
     %intel@${INTEL_VER}
+    %oneapi@${INTEL_VER}
     %gcc@${GCC_VER}
 )
 
@@ -75,7 +75,6 @@ do
 	#
 	# copy config files:
 	cp defaults/${fl} spack/etc/spack/defaults/${fl}
-}
 done
 #mv spack/etc/spack/defaults/packages.yaml spack/etc/spack/defaults/packages.yaml_bak
 #mv spack/etc/spack/defaults/modules.yaml spack/etc/spack/defaults/modules.yaml_bak
@@ -104,9 +103,7 @@ spack compiler find `spack location --install-dir  intel-oneapi-compilers`/compi
 spack compiler find `spack location --install-dir  intel-oneapi-compilers`/compiler/${INTEL_VER}/linux/bin/intel64
 
 
-
-
-
+#
 #############SOFTWARE INSTALL########################
 
 for compiler in "${compilers[@]}"
