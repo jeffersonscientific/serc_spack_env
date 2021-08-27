@@ -88,6 +88,10 @@ done
 #source the spack environment from relative path
 source spack/share/spack/setup-env.sh
 
+# remove compiler config:
+rm ${HOME}/.spack/linux/compilers.yaml
+spack compiler find
+
 #install compilers 
 #fix was added due to zen2 not having optimizations w/ 4.8.5 compiler
 spack install -j${CORECOUNT} gcc@${GCC_VER}%gcc@4.8.5 target=x86_64
@@ -122,6 +126,10 @@ do
     for mpi in "${mpis[@]}"
     do
         spack install -j${CORECOUNT} $mpi $compiler target=${ARCH}
+        #
+        # TODO: catch an mpi install fail. No point in going forward after that, right?
+        #
+        #
         spack install -j${CORECOUNT} cdo  $compiler ^$mpi target=${ARCH}
         spack install -j${CORECOUNT} parallel-netcdf $compiler ^$mpi target=${ARCH}
         spack install -j${CORECOUNT} petsc $compiler ^$mpi target=${ARCH}
