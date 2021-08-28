@@ -32,7 +32,9 @@ GCC_VER="11.2.0"
 INTEL_VER="2021.3.0"
 #
 CORECOUNT=${NPES} #main core count for compiling jobs
-ARCH="x86_64" #this is the main target, select either x86_64, zen2, or skylake_avx512
+
+#ARCH="x86_64" #this is the main target, select either x86_64, zen2, or skylake_avx512
+ARCH=$(basename $(pwd))
 if [[ ! -z $1 ]]; then
 	ARCH=$1
 fi
@@ -79,7 +81,7 @@ do
 	#
 	# copy config files:
 	#cp defaults/${fl} spack/etc/spack/defaults/${fl}
-		cp defaults/${fl} spack/etc/spack/
+	cp defaults/${fl} spack/etc/spack/
 done
 #mv spack/etc/spack/defaults/packages.yaml spack/etc/spack/defaults/packages.yaml_bak
 #mv spack/etc/spack/defaults/modules.yaml spack/etc/spack/defaults/modules.yaml_bak
@@ -125,7 +127,7 @@ do
     #
     # yoder:
     spack install -j${CORECOUNT} intel-oneapi-tbb $compiler target=${ARCH}
-	spack install -j${CORECOUNT} intel-oneapi-mkl $compiler target=${ARCH}
+    spack install -j${CORECOUNT} intel-oneapi-mkl $compiler target=${ARCH}
     	
     # Parallel installs
     for mpi in "${mpis[@]}"
@@ -138,23 +140,23 @@ do
         spack install -j${CORECOUNT} cdo  $compiler ^$mpi target=${ARCH}
         spack install -j${CORECOUNT} parallel-netcdf $compiler ^$mpi target=${ARCH}
         spack install -j${CORECOUNT} petsc $compiler ^$mpi target=${ARCH}
-		spack install -j${CORECOUNT} netcdf-fortran $compiler ^$mpi target=${ARCH}
-		spack install -j${CORECOUNT} netcdf-c $compiler ^$mpi target=${ARCH}
-		spack install -j${CORECOUNT} netcdf-cxx4 $compiler ^$mpi target=${ARCH}
-		spack install -j${CORECOUNT} hdf5 $compiler ^$mpi target=${ARCH}
-		spack install -j${CORECOUNT} fftw $compiler ^$mpi target=${ARCH}
-		spack install -j${CORECOUNT} parallelio $compiler ^$mpi target=${ARCH}
-		spack install -j${CORECOUNT} cgal $compiler ^$mpi target=${ARCH}
-		#
-		# problem children:
-		spack install -j${CORECOUNT} dealii $compiler ^$mpi target=${ARCH}
-		#  eventually, we get this error:
-		#  "%gcc@10.1.0" conflicts with "mesa" [GCC 10.1.0 has a bug]
-		#
-		# yoder:
-		spack install -j${CORECOUNT} xios $compiler ^$mpi target=${ARCH}
-		#  breaks installing Python or something? also does not seem to want to use the
-		#   already built packages; appears to be building new mpich, hdf5, and other things too.
+	spack install -j${CORECOUNT} netcdf-fortran $compiler ^$mpi target=${ARCH}
+	spack install -j${CORECOUNT} netcdf-c $compiler ^$mpi target=${ARCH}
+	spack install -j${CORECOUNT} netcdf-cxx4 $compiler ^$mpi target=${ARCH}
+	spack install -j${CORECOUNT} hdf5 $compiler ^$mpi target=${ARCH}
+	spack install -j${CORECOUNT} fftw $compiler ^$mpi target=${ARCH}
+	spack install -j${CORECOUNT} parallelio $compiler ^$mpi target=${ARCH}
+	spack install -j${CORECOUNT} cgal $compiler ^$mpi target=${ARCH}
+	#
+	# problem children:
+	spack install -j${CORECOUNT} dealii $compiler ^$mpi target=${ARCH}
+	#  eventually, we get this error:
+	#  "%gcc@10.1.0" conflicts with "mesa" [GCC 10.1.0 has a bug]
+	#
+	# yoder:
+	spack install -j${CORECOUNT} xios $compiler ^$mpi target=${ARCH}
+	#  breaks installing Python or something? also does not seem to want to use the
+	#   already built packages; appears to be building new mpich, hdf5, and other things too.
     done
 done
 
