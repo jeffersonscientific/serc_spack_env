@@ -53,8 +53,6 @@ mpis=(
 )
 
 
-
-
 #This is the ccache stuff commented out its really for testing and debugging.
 #spack install -j${CORECOUNT} ccache
 #now put ccache in the path
@@ -69,6 +67,11 @@ fi
 #
 # yoder: instead of coying the system default files, let's update the 'site' level config.
 # also, we'll want to figure out how to update the site-scope compilers.yaml...
+#  ... and actually, a better way to do this might be (see this note also in packages.yaml):
+  # yoder: intel "incompatible with formal parameter error"
+  #  we might need to define a additional custom config like --config-scope=intel@2021.3.0/ where we define these compiler specific configs.
+  #  NOTE that this might also be a slicker way to manage the configs from the repo, so the intalls would be like:
+  #  spack --config-scope=serc_config --config-scope=compiler_config/ install ...
 for fl in packages.yaml modules.yaml config.yaml
 do
 	#backup old yaml files
