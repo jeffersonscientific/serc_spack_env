@@ -29,7 +29,7 @@ fi
 # so let's give it a go!
 #GCC_VER="10.1.0"
 GCC_VER="11.2.0"
-INTEL_VER="2021.2.0"
+INTEL_VER="2021.3.0"
 #
 CORECOUNT=${NPES} #main core count for compiling jobs
 ARCH="x86_64" #this is the main target, select either x86_64, zen2, or skylake_avx512
@@ -66,15 +66,17 @@ mpis=(
 if [[ ! -d "spack" ]]; then
 	git clone https://github.com/spack/spack.git
 fi
-
-
+#
+# yoder: instead of coying the system default files, let's update the 'site' level config.
+# also, we'll want to figure out how to update the site-scope compilers.yaml...
 for fl in packages.yaml modules.yaml config.yaml
 do
 	#backup old yaml files
-	mv spack/etc/spack/defaults/${fl} spack/etc/spack/defaults/${fl}_bak
+	#mv spack/etc/spack/defaults/${fl} spack/etc/spack/defaults/${fl}_bak
 	#
 	# copy config files:
-	cp defaults/${fl} spack/etc/spack/defaults/${fl}
+	#cp defaults/${fl} spack/etc/spack/defaults/${fl}
+		cp defaults/${fl} spack/etc/spack/
 done
 #mv spack/etc/spack/defaults/packages.yaml spack/etc/spack/defaults/packages.yaml_bak
 #mv spack/etc/spack/defaults/modules.yaml spack/etc/spack/defaults/modules.yaml_bak
@@ -88,8 +90,9 @@ done
 #source the spack environment from relative path
 source spack/share/spack/setup-env.sh
 
-# remove compiler config:
-rm ${HOME}/.spack/linux/compilers.yaml
+# remove compiler config?:
+# it may be necessary to clean this out, but see below; what we really want to do is use the compiler find --scope=site option
+#rm ${HOME}/.spack/linux/compilers.yaml
 spack compiler find
 
 #install compilers 
@@ -98,13 +101,12 @@ spack install -j${CORECOUNT} gcc@${GCC_VER}%gcc@4.8.5 target=x86_64
 spack install -j${CORECOUNT} intel-oneapi-compilers@${INTEL_VER}%gcc@4.8.5 target=x86_64
 
 #now add the compilers - gcc
-spack compiler find `spack location --install-dir gcc@${GCC_VER}`
-spack compiler find `spack location --install-dir gcc@${GCC_VER}`/bin
-
-
+spack compiler find --scope=site `spack location --install-dir gcc@${GCC_VER}`
+spack compiler find --scope=site `spack location --install-dir gcc@${GCC_VER}`/bin
+#
 #icc
-spack compiler find `spack location --install-dir  intel-oneapi-compilers`/compiler/${INTEL_VER}/linux/bin
-spack compiler find `spack location --install-dir  intel-oneapi-compilers`/compiler/${INTEL_VER}/linux/bin/intel64
+spack compiler find --scope=site `spack location --install-dir  intel-oneapi-compilers`/compiler/${INTEL_VER}/linux/bin
+spack compiler find --scope=site `spack location --install-dir  intel-oneapi-compilers`/compiler/${INTEL_VER}/linux/bin/intel64
 
 
 #
