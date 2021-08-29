@@ -44,9 +44,9 @@ echo "*** Building for ARCH=${ARCH}; CPUs=${CORECOUNT}"
 
 #the compilers we will need.
 compilers=(
-    %intel@${INTEL_VER}
-    %oneapi@${INTEL_VER}
-    %gcc@${GCC_VER}
+    intel@${INTEL_VER}
+    oneapi@${INTEL_VER}
+    gcc@${GCC_VER}
 )
 
 mpis=(
@@ -74,15 +74,16 @@ fi
   #  we might need to define a additional custom config like --config-scope=intel@2021.3.0/ where we define these compiler specific configs.
   #  NOTE that this might also be a slicker way to manage the configs from the repo, so the intalls would be like:
   #  spack --config-scope=serc_config --config-scope=compiler_config/ install ...
-for fl in packages.yaml modules.yaml config.yaml
-do
-	#backup old yaml files
-	#mv spack/etc/spack/defaults/${fl} spack/etc/spack/defaults/${fl}_bak
-	#
-	# copy config files:
-	#cp defaults/${fl} spack/etc/spack/defaults/${fl}
-	cp defaults/${fl} spack/etc/spack/
-done
+#for fl in packages.yaml modules.yaml config.yaml
+#do
+#	#backup old yaml files
+#	#mv spack/etc/spack/defaults/${fl} spack/etc/spack/defaults/${fl}_bak
+#	#
+#	# copy config files:
+#	#cp defaults/${fl} spack/etc/spack/defaults/${fl}
+#	cp defaults/${fl} spack/etc/spack/
+#done
+
 #mv spack/etc/spack/defaults/packages.yaml spack/etc/spack/defaults/packages.yaml_bak
 #mv spack/etc/spack/defaults/modules.yaml spack/etc/spack/defaults/modules.yaml_bak
 
@@ -102,16 +103,16 @@ spack compiler find
 
 #install compilers 
 #fix was added due to zen2 not having optimizations w/ 4.8.5 compiler
-spack install -j${CORECOUNT} gcc@${GCC_VER}%gcc@4.8.5 target=x86_64
-spack install -j${CORECOUNT} intel-oneapi-compilers@${INTEL_VER}%gcc@4.8.5 target=x86_64
+spack install --config-scpe=config_cees/ -j${CORECOUNT} gcc@${GCC_VER}%gcc@4.8.5 target=x86_64
+spack install --config-scope=config_cees/ -j${CORECOUNT} intel-oneapi-compilers@${INTEL_VER}%gcc@4.8.5 target=x86_64
 
 #now add the compilers - gcc
-spack compiler find --scope=site `spack location --install-dir gcc@${GCC_VER}`
-spack compiler find --scope=site `spack location --install-dir gcc@${GCC_VER}`/bin
+spack compiler find --scope=site --config-scope=config_cees/ `spack location --install-dir gcc@${GCC_VER}`
+spack compiler find --scope=site --config-scope=config_cees/ `spack location --install-dir gcc@${GCC_VER}`/bin
 #
 #icc
-spack compiler find --scope=site `spack location --install-dir  intel-oneapi-compilers`/compiler/${INTEL_VER}/linux/bin
-spack compiler find --scope=site `spack location --install-dir  intel-oneapi-compilers`/compiler/${INTEL_VER}/linux/bin/intel64
+spack compiler find --scope=site --config-scope=config_cees/ `spack location --install-dir  intel-oneapi-compilers`/compiler/${INTEL_VER}/linux/bin
+spack compiler find --scope=site --config-scope=config_cees/ `spack location --install-dir  intel-oneapi-compilers`/compiler/${INTEL_VER}/linux/bin/intel64
 
 
 #
@@ -119,44 +120,37 @@ spack compiler find --scope=site `spack location --install-dir  intel-oneapi-com
 
 for compiler in "${compilers[@]}"
 do
+	if [[ ! -d config_${compiler} ]]; then
+		mkdir config_${compiler}
+	fi
+	#
     # Serial installs
-    spack install -j${CORECOUNT} proj $compiler target=${ARCH}
-    spack install -j${CORECOUNT} swig $compiler target=${ARCH}
-    spack install -j${CORECOUNT} maven $compiler target=${ARCH}
-    spack install -j${CORECOUNT} geos $compiler target=${ARCH}
-    #
-    # yoder:
-    spack install -j${CORECOUNT} intel-oneapi-tbb $compiler target=${ARCH}
-    spack install -j${CORECOUNT} intel-oneapi-mkl $compiler target=${ARCH}
+    for pkg in proj swig maven geos intel-oneapi-tbb intel-oneapi-mkl
+    do
+        spack --config-scope=config_cees/ --config-scope=config-${compiler}/ install -j${CORECOUNT} ${pkg} %${compiler} target=${ARCH}
+    done
     	
     # Parallel installs
     for mpi in "${mpis[@]}"
     do
-        spack install -j${CORECOUNT} $mpi $compiler target=${ARCH}
+        spack --config-scope=config_cees/ --config-scope=config-${compiler}/ install -j${CORECOUNT} $mpi %${compiler} target=${ARCH}
         #
         # TODO: catch an mpi install fail. No point in going forward after that, right?
         #
+        for pkg in cdo parallel-ndtcdf petsc netcdf-c netcdf-fortran netcdf-cx4 hdf5 fftw parallelio cgal dealii xios
+        do
+            spack --config-scope=config_cees/ --config-scope=config-${compiler}/ install -j${CORECOUNT} $pkg  %${compiler} ^$mpi target=${ARCH}
+        done
+    #
+        # problem children:
+        #spack install -j${CORECOUNT} dealii %${compiler} ^$mpi target=${ARCH}
+        ## eventually, we get this error:
+        #  "%gcc@10.1.0" conflicts with "mesa" [GCC 10.1.0 has a bug]
         #
-        spack install -j${CORECOUNT} cdo  $compiler ^$mpi target=${ARCH}
-        spack install -j${CORECOUNT} parallel-netcdf $compiler ^$mpi target=${ARCH}
-        spack install -j${CORECOUNT} petsc $compiler ^$mpi target=${ARCH}
-	spack install -j${CORECOUNT} netcdf-fortran $compiler ^$mpi target=${ARCH}
-	spack install -j${CORECOUNT} netcdf-c $compiler ^$mpi target=${ARCH}
-	spack install -j${CORECOUNT} netcdf-cxx4 $compiler ^$mpi target=${ARCH}
-	spack install -j${CORECOUNT} hdf5 $compiler ^$mpi target=${ARCH}
-	spack install -j${CORECOUNT} fftw $compiler ^$mpi target=${ARCH}
-	spack install -j${CORECOUNT} parallelio $compiler ^$mpi target=${ARCH}
-	spack install -j${CORECOUNT} cgal $compiler ^$mpi target=${ARCH}
-	#
-	# problem children:
-	spack install -j${CORECOUNT} dealii $compiler ^$mpi target=${ARCH}
-	#  eventually, we get this error:
-	#  "%gcc@10.1.0" conflicts with "mesa" [GCC 10.1.0 has a bug]
-	#
-	# yoder:
-	spack install -j${CORECOUNT} xios $compiler ^$mpi target=${ARCH}
-	#  breaks installing Python or something? also does not seem to want to use the
-	#   already built packages; appears to be building new mpich, hdf5, and other things too.
+        # yoder:
+        # spack install -j${CORECOUNT} xios %${compiler} ^$mpi target=${ARCH}
+        #  breaks installing Python or something? also does not seem to want to use the
+        #   already built packages; appears to be building new mpich, hdf5, and other things too.
     done
 done
 
