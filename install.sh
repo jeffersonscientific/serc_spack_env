@@ -48,10 +48,15 @@ compilers=(
     gcc@${GCC_VER}
     oneapi@${INTEL_VER}
 )
-
-mpis=(
+#
+# MPIs... well, 
+mpis_gcc=(
     openmpi
     mpich
+)
+mpis_intel=(
+    mpich
+    intel-oneapi-mpi
 )
 
 
@@ -68,30 +73,7 @@ if [[ ! -d "spack" ]]; then
 fi
 #
 # yoder: instead of coying the system default files, let's update the 'site' level config.
-# also, we'll want to figure out how to update the site-scope compilers.yaml...
-#  ... and actually, a better way to do this might be (see this note also in packages.yaml):
-  # yoder: intel "incompatible with formal parameter error"
-  #  we might need to define a additional custom config like --config-scope=intel@2021.3.0/ where we define these compiler specific configs.
-  #  NOTE that this might also be a slicker way to manage the configs from the repo, so the intalls would be like:
-  #  spack --config-scope=serc_config --config-scope=compiler_config/ install ...
-#for fl in packages.yaml modules.yaml config.yaml
-#do
-#	#backup old yaml files
-#	#mv spack/etc/spack/defaults/${fl} spack/etc/spack/defaults/${fl}_bak
-#	#
-#	# copy config files:
-#	#cp defaults/${fl} spack/etc/spack/defaults/${fl}
-#	cp defaults/${fl} spack/etc/spack/
-#done
-
-#mv spack/etc/spack/defaults/packages.yaml spack/etc/spack/defaults/packages.yaml_bak
-#mv spack/etc/spack/defaults/modules.yaml spack/etc/spack/defaults/modules.yaml_bak
-
-
-#copy over the configuration files:
-#cp defaults/modules.yaml spack/etc/spack/defaults/modules.yaml
-#cp defaults/packages.yaml spack/etc/spack/defaults/packages.yaml
-
+#
 
 #source the spack environment from relative path
 source spack/share/spack/setup-env.sh
@@ -115,7 +97,6 @@ spack --config-scope=config_cees/ compiler find --scope=site `spack location --i
 spack --config-scope=config_cees/ compiler find --scope=site `spack location --install-dir  intel-oneapi-compilers`/compiler/${INTEL_VER}/linux/bin
 spack --config-scope=config_cees/ compiler find --scope=site `spack location --install-dir  intel-oneapi-compilers`/compiler/${INTEL_VER}/linux/bin/intel64
 
-
 #
 #############SOFTWARE INSTALL########################
 
@@ -125,6 +106,10 @@ do
 	if [[ ! -d config_${compiler} ]]; then
 		mkdir config_${compiler}
 	fi
+    mpis=$mpis_gcc
+    if [[ ${compiler} = intel* || ${compiler} = oneapi* ]]; then
+        mpis=$mpis_intel
+    fi
 	#
     # Serial installs
     for pkg in proj swig maven geos intel-oneapi-tbb intel-oneapi-mkl
