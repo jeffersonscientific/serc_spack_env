@@ -45,8 +45,8 @@ echo "*** Building for ARCH=${ARCH}; CPUs=${CORECOUNT}"
 #the compilers we will need.
 compilers=(
     intel@${INTEL_VER}
-    oneapi@${INTEL_VER}
     gcc@${GCC_VER}
+    oneapi@${INTEL_VER}
 )
 
 mpis=(
@@ -101,18 +101,19 @@ source spack/share/spack/setup-env.sh
 #rm ${HOME}/.spack/linux/compilers.yaml
 spack compiler find
 
-#install compilers 
+#install compilers
+echo "*** Installing compilers:"
 #fix was added due to zen2 not having optimizations w/ 4.8.5 compiler
-spack install --config-scpe=config_cees/ -j${CORECOUNT} gcc@${GCC_VER}%gcc@4.8.5 target=x86_64
-spack install --config-scope=config_cees/ -j${CORECOUNT} intel-oneapi-compilers@${INTEL_VER}%gcc@4.8.5 target=x86_64
+spack --config-scope=config_cees/ install -j${CORECOUNT} gcc@${GCC_VER}%gcc@4.8.5 target=x86_64
+spack --config-scope=config_cees/ install -j${CORECOUNT} intel-oneapi-compilers@${INTEL_VER}%gcc@4.8.5 target=x86_64
 
 #now add the compilers - gcc
-spack compiler find --scope=site --config-scope=config_cees/ `spack location --install-dir gcc@${GCC_VER}`
-spack compiler find --scope=site --config-scope=config_cees/ `spack location --install-dir gcc@${GCC_VER}`/bin
+spack --config-scope=config_cees/ compiler find --scope=site `spack location --install-dir gcc@${GCC_VER}`
+spack --config-scope=config_cees/ compiler find --scope=site `spack location --install-dir gcc@${GCC_VER}`/bin
 #
 #icc
-spack compiler find --scope=site --config-scope=config_cees/ `spack location --install-dir  intel-oneapi-compilers`/compiler/${INTEL_VER}/linux/bin
-spack compiler find --scope=site --config-scope=config_cees/ `spack location --install-dir  intel-oneapi-compilers`/compiler/${INTEL_VER}/linux/bin/intel64
+spack --config-scope=config_cees/ compiler find --scope=site `spack location --install-dir  intel-oneapi-compilers`/compiler/${INTEL_VER}/linux/bin
+spack --config-scope=config_cees/ compiler find --scope=site `spack location --install-dir  intel-oneapi-compilers`/compiler/${INTEL_VER}/linux/bin/intel64
 
 
 #
@@ -120,6 +121,7 @@ spack compiler find --scope=site --config-scope=config_cees/ `spack location --i
 
 for compiler in "${compilers[@]}"
 do
+	echo "*** Installing Compiler $compiler stack..."
 	if [[ ! -d config_${compiler} ]]; then
 		mkdir config_${compiler}
 	fi
@@ -127,19 +129,21 @@ do
     # Serial installs
     for pkg in proj swig maven geos intel-oneapi-tbb intel-oneapi-mkl
     do
-        spack --config-scope=config_cees/ --config-scope=config-${compiler}/ install -j${CORECOUNT} ${pkg} %${compiler} target=${ARCH}
+        spack --config-scope=config_cees/ --config-scope=config_${compiler}/ install -j${CORECOUNT} ${pkg} %${compiler} target=${ARCH}
     done
     	
     # Parallel installs
     for mpi in "${mpis[@]}"
     do
-        spack --config-scope=config_cees/ --config-scope=config-${compiler}/ install -j${CORECOUNT} $mpi %${compiler} target=${ARCH}
+		echo "*** Installing MPI elements: $compiler-$mpi"
+        spack --config-scope=config_cees/ --config-scope=config_${compiler}/ install -j${CORECOUNT} $mpi %${compiler} target=${ARCH}
         #
         # TODO: catch an mpi install fail. No point in going forward after that, right?
         #
         for pkg in cdo parallel-ndtcdf petsc netcdf-c netcdf-fortran netcdf-cx4 hdf5 fftw parallelio cgal dealii xios
         do
-            spack --config-scope=config_cees/ --config-scope=config-${compiler}/ install -j${CORECOUNT} $pkg  %${compiler} ^$mpi target=${ARCH}
+            echo "*** Package: $pkg"
+            spack --config-scope=config_cees/ --config-scope=config_${compiler}/ install -j${CORECOUNT} $pkg  %${compiler} ^$mpi target=${ARCH}
         done
     #
         # problem children:
