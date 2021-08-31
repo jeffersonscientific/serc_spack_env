@@ -16,8 +16,11 @@ packages:
     version: [6.2]
   findutils:
     version: [4.7.0]
-  proj:
-    version: [8.1.0]
+#  proj:
+#    version: [8.1.0]
+  boost:
+    version: [1.76.0]
+    variants: +mpi+numpy+pic+python
   all:
     compiler: [intel@21.3.0]
     variants: build_type=Release +mpi
