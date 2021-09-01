@@ -125,6 +125,8 @@ do
         #
         # TODO: catch an mpi install fail. No point in going forward after that, right?
         #
+        spack --config-scope=config_cees/ --config-scope=config_${compiler}/ install -j${CORECOUNT} hdf5@1.10.7  %${compiler} ^$mpi target=${ARCH}
+        #
         for pkg in cdo parallel-netcdf petsc netcdf-c netcdf-fortran netcdf-cxx4 hdf5 fftw parallelio cgal dealii xios
         do
             echo "*** Package: $pkg"
