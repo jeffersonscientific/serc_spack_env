@@ -116,7 +116,7 @@ do
     do
         spack --config-scope=config_cees/ --config-scope=config_${compiler}/ install -j${CORECOUNT} ${pkg} %${compiler} target=${ARCH}
     done
-    	
+exit 1    	
     # Parallel installs
     for mpi in "${mpis[@]}"
     do
