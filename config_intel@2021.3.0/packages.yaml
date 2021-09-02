@@ -24,6 +24,7 @@ packages:
     version: [1.0.8]
   dealii:
     version: [9.3.0]
+    variants: +netcdf + mpi +python
   ncurses:
     version: [6.2]
   findutils:
@@ -31,6 +32,9 @@ packages:
   freetype:
     # this specific to an error, "freetype  v>2.8 cannot be built with %intel"
     version: [2.7.1]
+  gmsh:
+    version: [4.8.4]
+    variants: ~med +hdf5 +eigen +petsc +slepc
 #  proj:
 #    version: [8.1.0]
   hdf5:
