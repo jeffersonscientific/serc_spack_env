@@ -10,17 +10,35 @@ packages:
     # this appears to just not build under intel@2021.3.0
     variants: +pmi +legacylaunchers schedulers=slurm fabrics=ucx,ofi
     version: [4.1.1]
+  bison:
+    # getting "error: argument is incompatible with formal parameter"
+    #  for v >= 3.5 . This is supposedly a bug in the compiler... maybe.
+    version: [3.4.2]
+  blitz:
+    version: [1.0.2]
+  boost:
+    version: [1.75.0]
+    variants: cxxstd=17
+    #variants: +mpi+numpy+pic+python
   bzip2:
     version: [1.0.8]
+  dealii:
+    version: [9.3.0]
   ncurses:
     version: [6.2]
   findutils:
     version: [4.7.0]
+  freetype:
+    # this specific to an error, "freetype  v>2.8 cannot be built with %intel"
+    version: [2.7.1]
 #  proj:
 #    version: [8.1.0]
-  boost:
-    version: [1.76.0]
-    variants: +mpi+numpy+pic+python
+  hdf5:
+    variants: ~cxx~debug+fortran+hl~java+mpi+shared~szip+threadsafe
+    version: [1.10.7]
+
+  doxygen:
+    version: [1.8.16]
   all:
     compiler: [intel@21.3.0]
     variants: build_type=Release +mpi

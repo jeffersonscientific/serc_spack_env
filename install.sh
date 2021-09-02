@@ -5,9 +5,12 @@
 #SBATCH --time=1-00:00:00
 #SBATCH --ntasks=1 # how to scale the following to multiple tasks?
 #SBATCH --cpus-per-task=8
-#SBATCH --mem-per-cpu=2G
+#SBATCH --mem-per-cpu=4G
 #SBATCH -p serc,normal
 ##SBATCH -C CPU_MNF:INTEL
+#
+# TODO: for Intel compilers, we might actually need a more current GCC compiler. Ugh! So we could try a spack load, or maybe
+#  we just need to build in multiple steps (for each compiler)
 #
 # NOTE: At this time, I think this will not parallelize across nodes, but
 #   we need to look into this more carefully.
@@ -96,7 +99,12 @@ spack --config-scope=config_cees/ compiler find --scope=site `spack location --i
 #icc
 spack --config-scope=config_cees/ compiler find --scope=site `spack location --install-dir  intel-oneapi-compilers`/compiler/${INTEL_VER}/linux/bin
 spack --config-scope=config_cees/ compiler find --scope=site `spack location --install-dir  intel-oneapi-compilers`/compiler/${INTEL_VER}/linux/bin/intel64
-
+#
+# we might need this for some %intel installs:
+spack load gcc@${GCC_VER}
+#echo "which gcc: "
+#echo `which gcc`
+#exit 1
 #
 #############SOFTWARE INSTALL########################
 
@@ -116,7 +124,7 @@ do
     do
         spack --config-scope=config_cees/ --config-scope=config_${compiler}/ install -j${CORECOUNT} ${pkg} %${compiler} target=${ARCH}
     done
-exit 1    	
+    #
     # Parallel installs
     for mpi in "${mpis[@]}"
     do
@@ -125,9 +133,15 @@ exit 1
         #
         # TODO: catch an mpi install fail. No point in going forward after that, right?
         #
-        spack --config-scope=config_cees/ --config-scope=config_${compiler}/ install -j${CORECOUNT} hdf5@1.10.7  %${compiler} ^$mpi target=${ARCH}
+        # main packages:
+        for pkg in cdo parallel-netcdf petsc netcdf-c netcdf-fortran netcdf-cxx4 hdf5 fftw parallelio cgal
+        do
+            echo "*** Package: $pkg"
+            spack --config-scope=config_cees/ --config-scope=config_${compiler}/ install -j${CORECOUNT} $pkg  %${compiler} ^$mpi target=${ARCH}
+        done
         #
-        for pkg in cdo parallel-netcdf petsc netcdf-c netcdf-fortran netcdf-cxx4 hdf5 fftw parallelio cgal dealii xios
+        # aux packages and problem children:
+        for pkg in freetype dealii xios
         do
             echo "*** Package: $pkg"
             spack --config-scope=config_cees/ --config-scope=config_${compiler}/ install -j${CORECOUNT} $pkg  %${compiler} ^$mpi target=${ARCH}
