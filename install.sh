@@ -120,7 +120,7 @@ do
     fi
 	#
     # Serial installs
-    for pkg in proj swig maven geos intel-oneapi-tbb intel-oneapi-mkl
+    for pkg in proj swig maven geos intel-oneapi-tbb intel-oneapi-mkl intel-tbb
     do
         spack --config-scope=config_cees/ --config-scope=config_${compiler}/ install -j${CORECOUNT} ${pkg} %${compiler} target=${ARCH}
     done
