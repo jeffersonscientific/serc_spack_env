@@ -16,5 +16,5 @@ modules:
       - 'compiler'
     hash_length: 0
     projections:
-      all:          '{name}-yoda/{version}'
+      all:       '{name}-yoda/{version}'
       ^mpi:      '{name}-yoda/{^mpi.name}-{version}'

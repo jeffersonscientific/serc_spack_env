@@ -74,13 +74,13 @@ packages:
   xios:
     version: [2.5]
   intel-oneapi-tbb:
-    version: [2021.3.0]
+    version: [2021.2.0]
   intel-oneapi-mkl:
-    version: [2020.3.0]
+    version: [2021.2.0]
   intel-oneapi-compilers:
-    version: [2021.3.0]
+    version: [2021.2.0]
   intel-tbb:
-    version: [2021.3.0]
+    version: [2021.2.0]
   blitz:
     version: [1.0.2]
   xios:
