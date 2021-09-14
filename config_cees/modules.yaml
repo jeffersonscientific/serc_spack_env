@@ -1,20 +1,29 @@
 modules:
-  prefix_inspections:
-    bin:
-      - PATH
-    lib:
-      - LIBRARY_PATH
-    include:
-      - CPATH
-  enable::
-    - lmod
-  lmod:
-    core_compilers:
-      - 'gcc@4.8.5'
-    hierarchy:
-      - 'mpi'
-      - 'compiler'
-    hash_length: 0
-    projections:
-      all:       '{name}-yoda/{version}'
-      ^mpi:      '{name}-yoda/{^mpi.name}-{version}'
+  default:
+    roots:
+      lmod: $spack/share/spack/lmod
+      tcl: $spack/share/spack/modules
+    prefix_inspections:
+      bin:
+        - PATH
+      lib:
+        - LIBRARY_PATH
+        - LD_LIBRARY_PATH
+      lib/pkgconfig:
+        - PKG_CONFIG_PATH
+      share/pkgconfig:
+        - PKG_CONFIG_PATH
+      include:
+        - CPATH
+    enable::
+      - lmod
+    lmod:
+      core_compilers:
+        - 'gcc@4.8.5'
+      hierarchy:
+        - 'mpi'
+        - 'compiler'
+      hash_length:: 5
+      projections:
+        all:       '{name}-yoda2/{version}'
+        ^mpi:      '{name}-yoda2/{^mpi.name}-{version}'

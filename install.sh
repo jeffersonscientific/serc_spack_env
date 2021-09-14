@@ -9,6 +9,8 @@
 #SBATCH -p serc,normal
 ##SBATCH -C CPU_MNF:INTEL
 #
+# usage:
+# ./insttall.sh {arch} {npes} {spack_env}
 # TODO: for Intel compilers, we might actually need a more current GCC compiler. Ugh! So we could try a spack load, or maybe
 #  we just need to build in multiple steps (for each compiler)
 #
@@ -32,7 +34,12 @@ fi
 #GCC_VER="10.1.0"
 GCC_VER="11.2.0"
 INTEL_VER="2021.2.0"
-SPACK_ENV="intel_202102"
+ONEAPI_VER="2021.3.0"
+#SPACK_ENV="intel_202102"
+#
+if [[ ! -z $3 ]]; then
+    SPACK_EN=$3
+fi
 #
 CORECOUNT=${NPES} #main core count for compiling jobs
 #
@@ -49,11 +56,8 @@ echo "*** Building for ARCH=${ARCH}; CPUs=${CORECOUNT}"
 compilers=(
     intel@${INTEL_VER}
      gcc@${GCC_VER}
-     oneapi@${INTEL_VER}
+     oneapi@${ONEAPI_VER}
 )
-#     gcc@${GCC_VER}
-#    oneapi@${INTEL_VER}
-#)
 #
 # MPIs... well, 
 mpis_gcc=(
@@ -85,34 +89,51 @@ fi
 #source the spack environment from relative path
 source spack/share/spack/setup-env.sh
 #
-# are we using an environment?
-if [[ ! -z ${SPACK_ENV} ]]; then
-    spack env activate ${SPACK_ENV}
-    if [[ ! $?=0 ]]; then
-        echo "Error activating Spack environment: ${SPACK_ENV}"
-        exit 1
-    fi
-fi
 #
 # remove compiler config?:
 # it may be necessary to clean this out, but see below; what we really want to do is use the compiler find --scope=site option
 #rm ${HOME}/.spack/linux/compilers.yaml
-spack compiler find
+spack compiler find --scope=site
 
 #install compilers
 echo "*** Installing compilers:"
 #fix was added due to zen2 not having optimizations w/ 4.8.5 compiler
 spack --config-scope=config_cees/ install -j${CORECOUNT} gcc@${GCC_VER}%gcc@4.8.5 target=x86_64
 spack --config-scope=config_cees/ install -j${CORECOUNT} intel-oneapi-compilers@${INTEL_VER}%gcc@4.8.5 target=x86_64
+spack --config-scope=config_cees/ install -j${CORECOUNT} intel-oneapi-compilers@${ONEAPI_VER}%gcc@4.8.5 target=x86_64
 
-#now add the compilers - gcc
+#now add the compilers
+# GCC:
 # use??  --config-scope=config_cees/
 spack compiler find --scope=site `spack location --install-dir gcc@${GCC_VER}`
-spack compiler find --scope=site `spack location --install-dir gcc@${GCC_VER}`/bin
+#spack compiler find --scope=site `spack location --install-dir gcc@${GCC_VER}`/bin
 #
-#icc
-spack compiler find --scope=site `spack location --install-dir  intel-oneapi-compilers`/compiler/${INTEL_VER}/linux/bin
-spack compiler find --scope=site `spack location --install-dir  intel-oneapi-compilers`/compiler/${INTEL_VER}/linux/bin/intel64
+# ICX:
+spack compiler find --scope=site `spack location --install-dir  intel-oneapi-compilers@${ONEAPI_VER}`/compiler/${ONEAPI_VER}/linux/bin
+#
+# ICC, etc.:
+# NOTE: Intel compiler needs to know where gcc et al. are, and in some cases, we need a newer version. To use the
+#  preferred gcc, there are two (good) options: 1) set the modules = [] value in compilers.yaml (or equivalently
+#  in the {environment}/spack.yaml file), or to set flags:{cflags, cxxflags:, cppflags: values}. It would be nice to
+#  be able to do this from the command line, but I'm not seeing it.
+#  https://spack.readthedocs.io/en/latest/getting_started.html
+#
+# I wish this worked, but it does not:
+#spack compiler add --scope=site `spack location --install-dir  intel-oneapi-compilers@${INTEL_VER}`/compiler/${INTEL_VER}/linux/bin/intel64 --cflags="-gcc-name `spack location --install-dir gcc@${GCC_VER}`/bin/gcc" --cxxflags="-gxx-name `spack location --install-dir gcc@${GCC_VER}`/bin/g++" --fflags="-gcc-name `spack location --install-dir gcc@${GCC_VER}`/bin/gcc"
+# icc
+spack compiler find --scope=site `spack location --install-dir  intel-oneapi-compilers@${INTEL_VER}`/compiler/${INTEL_VER}/linux/bin/intel64
+
+# are we using an environment?
+#if [[ ! -z ${SPACK_ENV} ]]; then
+#    spack env activate ${SPACK_ENV}
+#    if [[ ! $?=0 ]]; then
+#        echo "Error activating Spack environment: ${SPACK_ENV}"
+#        exit 1
+#    fi
+#fi
+spack compiler find --scope=site
+
+
 #
 #############SOFTWARE INSTALL########################
 #
@@ -187,7 +208,7 @@ done
 
 #have spack regenerate module files:
 
-spack module lmod refresh --delete-tree -y
+spack --config-scope=config_cees/ module lmod refresh --delete-tree -y
 
 
 exit 0

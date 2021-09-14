@@ -1,0 +1,6 @@
+modules:
+  default:
+    roots:
+      lmod: $spack/share/spack/lmod_intel202102
+      tcl: $spack/share/spack/modules_intel202102
+
