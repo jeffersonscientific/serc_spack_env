@@ -1,0 +1,61 @@
+compilers:
+- compiler:
+    spec: gcc@11.2.0
+    paths:
+      cc: /scratch/users/myoder96/spack_dev/zen2/spack/opt/spack/linux-centos7-x86_64/gcc-4.8.5/gcc-11.2.0-opeupephe2oq6dewsfkrcu5a7yviq233/bin/gcc
+      cxx: /scratch/users/myoder96/spack_dev/zen2/spack/opt/spack/linux-centos7-x86_64/gcc-4.8.5/gcc-11.2.0-opeupephe2oq6dewsfkrcu5a7yviq233/bin/g++
+      f77: /scratch/users/myoder96/spack_dev/zen2/spack/opt/spack/linux-centos7-x86_64/gcc-4.8.5/gcc-11.2.0-opeupephe2oq6dewsfkrcu5a7yviq233/bin/gfortran
+      fc: /scratch/users/myoder96/spack_dev/zen2/spack/opt/spack/linux-centos7-x86_64/gcc-4.8.5/gcc-11.2.0-opeupephe2oq6dewsfkrcu5a7yviq233/bin/gfortran
+    flags:
+      fflags: -fallow-argument-mismatch
+    operating_system: centos7
+    target: x86_64
+    modules: []
+    environment: {}
+    extra_rpaths: []
+- compiler:
+    spec: intel@2021.2.0
+    paths:
+      cc: /scratch/users/myoder96/spack_dev/zen2/spack/opt/spack/linux-centos7-x86_64/gcc-4.8.5/intel-oneapi-compilers-2021.2.0-sapdob5shwm73lj3fy7q2y3gzy2n23i6/compiler/2021.2.0/linux/bin/intel64/icc
+      cxx: /scratch/users/myoder96/spack_dev/zen2/spack/opt/spack/linux-centos7-x86_64/gcc-4.8.5/intel-oneapi-compilers-2021.2.0-sapdob5shwm73lj3fy7q2y3gzy2n23i6/compiler/2021.2.0/linux/bin/intel64/icpc
+      f77: /scratch/users/myoder96/spack_dev/zen2/spack/opt/spack/linux-centos7-x86_64/gcc-4.8.5/intel-oneapi-compilers-2021.2.0-sapdob5shwm73lj3fy7q2y3gzy2n23i6/compiler/2021.2.0/linux/bin/intel64/ifort
+      fc: /scratch/users/myoder96/spack_dev/zen2/spack/opt/spack/linux-centos7-x86_64/gcc-4.8.5/intel-oneapi-compilers-2021.2.0-sapdob5shwm73lj3fy7q2y3gzy2n23i6/compiler/2021.2.0/linux/bin/intel64/ifort
+    flags:
+      cflags: -gcc-name `spack location --install-dir gcc@11.2.0`/bin/gcc
+      cxxflags: -gxx-name `spack location --install-dir gcc@11.2.0`/bin/g++
+      fflags: -gcc-name `spack location --install-dir gcc@11.2.0`/bin/gcc -fallow-argument-mismatch
+    operating_system: centos7
+    target: x86_64
+    modules: []
+    environment: {}
+    extra_rpaths: []
+- compiler:
+    spec: oneapi@2021.3.0
+    paths:
+      cc: /scratch/users/myoder96/spack_dev/zen2/spack/opt/spack/linux-centos7-x86_64/gcc-4.8.5/intel-oneapi-compilers-2021.3.0-p6xevyamhyy4pdalbrbuvq3gymfnrvix/compiler/2021.3.0/linux/bin/icx
+      cxx: /scratch/users/myoder96/spack_dev/zen2/spack/opt/spack/linux-centos7-x86_64/gcc-4.8.5/intel-oneapi-compilers-2021.3.0-p6xevyamhyy4pdalbrbuvq3gymfnrvix/compiler/2021.3.0/linux/bin/icpx
+      f77: /scratch/users/myoder96/spack_dev/zen2/spack/opt/spack/linux-centos7-x86_64/gcc-4.8.5/intel-oneapi-compilers-2021.3.0-p6xevyamhyy4pdalbrbuvq3gymfnrvix/compiler/2021.3.0/linux/bin/ifx
+      fc: /scratch/users/myoder96/spack_dev/zen2/spack/opt/spack/linux-centos7-x86_64/gcc-4.8.5/intel-oneapi-compilers-2021.3.0-p6xevyamhyy4pdalbrbuvq3gymfnrvix/compiler/2021.3.0/linux/bin/ifx
+    flags:
+      cflags: -gcc-name `spack location --install-dir gcc@11.2.0`/bin/gcc
+      cxxflags: -gxx-name `spack location --install-dir gcc@11.2.0`/bin/g++
+      fflags: -gcc-name `spack location --install-dir gcc@11.2.0`/bin/gcc -fallow-argument-mismatch
+    operating_system: centos7
+    target: x86_64
+    modules: []
+    environment: {}
+    extra_rpaths: []
+- compiler:
+    spec: gcc@4.8.5
+    paths:
+      cc: /usr/bin/gcc
+      cxx: /usr/bin/g++
+      f77: /usr/bin/gfortran
+      fc: /usr/bin/gfortran
+    flags:
+      fflags: -fallow-argument-mismatch
+    operating_system: centos7
+    target: x86_64
+    modules: []
+    environment: {}
+    extra_rpaths: []
