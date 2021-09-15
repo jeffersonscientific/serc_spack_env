@@ -121,7 +121,9 @@ spack compiler find --scope=site `spack location --install-dir  intel-oneapi-com
 # NOTE create this even if ${SPACK_ENV_NAME} is empty.
 if [[ ! -d config_env_${SPACK_ENV_NAME} ]]; then mkdir config_env_${SPACK_ENV_NAME}; fi
 if [[ ! -z ${SPACK_ENV_NAME} ]]; then
-    spack env create ${SPACK_ENV_NAME}
+    if [[ ! -d spack/var/spack/environments/${SPACK_ENV_NAME} ]]; then
+      spack env create ${SPACK_ENV_NAME}
+    fi
     spack env activate ${SPACK_ENV_NAME}
     #
 cat > config_env_${SPACK_ENV_NAME}/modules.yaml <<EOF

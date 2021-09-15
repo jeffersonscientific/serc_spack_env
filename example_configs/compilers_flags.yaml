@@ -1,0 +1,21 @@
+compilers:
+  - compiler:
+    spec: gcc@11.2.0
+    flags:
+      fflags: -fallow-argument-mismatch
+  - compiler:
+    spec: intel@2021.2.0
+    flags:
+      cflags: -gcc-name `spack location --install-dir gcc@11.2.0`/bin/gcc
+      cxxflags: -gxx-name `spack location --install-dir gcc@11.2.0`/bin/g++
+      fflags: -gcc-name `spack location --install-dir gcc@11.2.0`/bin/gcc -fallow-argument-mismatch
+  - compiler:
+    spec: intel@2021.3.0
+    flags:
+      cflags: -gcc-name `spack location --install-dir gcc@11.2.0`/bin/gcc
+      cxxflags: -gxx-name `spack location --install-dir gcc@11.2.0`/bin/g++
+      fflags: -gcc-name `spack location --install-dir gcc@11.2.0`/bin/gcc -fallow-argument-mismatch
+  - compiler:
+    spec: oneapi@2021.3.0
+    flags:
+      fflags: -fallow-argument-mismatch
