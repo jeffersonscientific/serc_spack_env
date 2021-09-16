@@ -14,3 +14,6 @@ packages:
      version: [2021.2.0]
   intel-oneapi-compilers:
     version: [2021.2.0]
+  tar:
+    version: [1.32]
+  

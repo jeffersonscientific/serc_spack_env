@@ -117,6 +117,8 @@ spack compiler find --scope=site `spack location --install-dir  intel-oneapi-com
 # icc
 spack compiler find --scope=site `spack location --install-dir  intel-oneapi-compilers@${INTEL_VER}`/compiler/${INTEL_VER}/linux/bin/intel64
 
+#exit
+
 # are we using an environment?
 # NOTE create this even if ${SPACK_ENV_NAME} is empty.
 if [[ ! -d config_env_${SPACK_ENV_NAME} ]]; then mkdir config_env_${SPACK_ENV_NAME}; fi
