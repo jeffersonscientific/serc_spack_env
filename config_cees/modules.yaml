@@ -3,6 +3,8 @@ modules:
     roots:
       lmod: $spack/share/spack/lmod
       tcl: $spack/share/spack/modules
+  enable::
+    - lmod
     lmod:
       core_compilers:
         - gcc@4.8.5
@@ -25,6 +27,3 @@ modules:
       - PKG_CONFIG_PATH
     include:
       - CPATH
-  enable::
-    - lmod
-
