@@ -3,15 +3,15 @@ modules:
     roots:
       lmod: $spack/share/spack/lmod
       tcl: $spack/share/spack/modules
-  enable::
-    - lmod
+    enable::
+      - lmod
     lmod:
       core_compilers:
         - gcc@4.8.5
       hierarchy:
         - mpi
         - compiler
-      hash_length:: 5
+      hash_length:: 3
       projections:
         all:       '{name}-yoda/{version}'
         ^mpi:      '{name}-yoda/{^mpi.name}-{version}'
