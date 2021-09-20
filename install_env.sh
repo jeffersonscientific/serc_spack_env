@@ -129,7 +129,7 @@ spack compiler find --scope=site `spack location --install-dir  intel-oneapi-com
 #exit
 
 # are we using an environment?
-if [[ ${NUKE_ENV} != 0 ]]; then spack env remove ${SPACK_ENV_NAME}; fi
+if [[ ${NUKE_ENV} != 0 ]]; then spack env remove -y ${SPACK_ENV_NAME}; fi
 
 # NOTE create this even if ${SPACK_ENV_NAME} is empty.
 if [[ ! -d config_env_${SPACK_ENV_NAME} ]]; then mkdir config_env_${SPACK_ENV_NAME}; fi
