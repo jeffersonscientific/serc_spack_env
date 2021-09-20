@@ -137,7 +137,7 @@ if [[ ! -z ${SPACK_ENV_NAME} ]]; then
     if [[ ! -d spack/var/spack/environments/${SPACK_ENV_NAME} ]]; then
       spack env create ${SPACK_ENV_NAME}
     fi
-    spack env activate ${SPACK_ENV_NAME}
+    spack  --config-scope=config_cees/ --config-scope=config_intel@${INTEL_VER}/ --config-scope=config_oneapi@${ONEAPI_VER}/ env activate ${SPACK_ENV_NAME}
     #
 
 cat > config_env_${SPACK_ENV_NAME}/modules.yaml <<EOF
@@ -296,5 +296,6 @@ setenv("F90", "ifx")
 EOF
 
 
+echo "finised install_env.sh script. exiting..."
 exit 0
 
