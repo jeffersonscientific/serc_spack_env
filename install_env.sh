@@ -46,7 +46,7 @@ TCL_PATH="`pwd`/spack/share/spack/modules_${SPACK_ENV_NAME}"
 #
 # append module names with this. It is in the modules.yaml file, but we don't
 #  know how to get it from there, gracefully, yet.
-LMOD_SUFFIX="-yoda"
+LMOD_SUFFIX="-beta"
 # This is the general install script for SERC on the Sherlock HPC system @ Stanford.
 # 
 #set -x #debug

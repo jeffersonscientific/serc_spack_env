@@ -1,4 +1,7 @@
 # intel@2021.3.0
+# NOTE: this is as far as we got trying to makd intel@2021.3.0 work, before we reverted back to
+#  intel@2021.2.0, and everything worked except m4, which we bump down from 1.4.19 -> 1.4.17.
+#  so probably, let's wait untile at least intel@2021.4.0.
 packages:
   openmpi:
     # this appears to just not build under intel@2021.3.0

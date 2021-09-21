@@ -13,8 +13,8 @@ modules:
         - compiler
       hash_length:: 3
       projections:
-        all:       '{name}-yoda/{version}'
-        ^mpi:      '{name}-yoda/{^mpi.name}-{version}'
+        all:       '{name}-beta/{version}'
+        ^mpi:      '{name}-beta/{^mpi.name}-{version}'
   prefix_inspections:
     bin:
       - PATH
