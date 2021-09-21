@@ -249,6 +249,13 @@ spack load intel-oneapi-compilers
 INTEL_MODULE_PATH=${LMOD_PATH}/linux-centos7-x86_64/Core/intel/${INTEL_VER}.lua
 ONEAPI_MODULE_PATH=${LMOD_PATH}/linux-centos7-x86_64/Core/oneapi/${ONEAPI_VER}.lua
 
+for pth in `dirname ${INTEL_MODULE_PATH}` `dirname ${ONEAPI_MODULE_PATH}`
+do
+    if [[ ! -d ${pth} ]]; then
+        mkdir -p ${pth}
+    fi
+done
+#
 cat > ${INTEL_MODULE_PATH} <<EOF
 whatis([[Name : intel ]])
 whatis([[Version : ${INTEL_VER}]])
@@ -260,7 +267,7 @@ family("compiler")
 depends_on(intel-oneapi-compilers)
 --
 -- NOTE: how do we script the module naming scheme?
-prepend_path("MODULEPATH", "/${LMOD_PATH}/linux-centos7-x86_64/intel/${INTEL_VER}")
+prepend_path("MODULEPATH", "/${LMOD_PATH}/linux-centos7-x86_64/Core/intel/${INTEL_VER}")
 --
 -- TODO: might need/benefit from full paths?
 -- setenv("CC", "`which icc`")
@@ -283,7 +290,7 @@ family("compiler")
 depends_on(intel-oneapi-compilers)
 --
 -- NOTE: how do we script the module naming scheme?
-prepend_path("MODULEPATH", "/${LMOD_PATH}/linux-centos7-x86_64/oneapi/${ONEAPI_VER}")
+prepend_path("MODULEPATH", "/${LMOD_PATH}/linux-centos7-x86_64/Core/oneapi/${ONEAPI_VER}")
 --
 -- TODO: might need/benefit from full paths?
 -- setenv("CC", "`which icx`")
