@@ -264,7 +264,7 @@ whatis([[Short description : Wrapper module script to load intel-oneapi-compiler
 help([[Wrapper modle for intel-oneapi intel/ compilers ]])
 family("compiler")
 --
-depends_on(intel-oneapi-compilers)
+depends_on("intel-oneapi-compilers")
 --
 -- NOTE: how do we script the module naming scheme?
 prepend_path("MODULEPATH", "/${LMOD_PATH}/linux-centos7-x86_64/Core/intel/${INTEL_VER}")
@@ -287,7 +287,7 @@ whatis([[Short description : Wrapper module script to load intel-oneapi-compiler
 help([[Wrapper modle for intel-oneapi oneapi/ (LLVM based) compilers ]])
 family("compiler")
 --
-depends_on(intel-oneapi-compilers)
+depends_on("intel-oneapi-compilers")
 --
 -- NOTE: how do we script the module naming scheme?
 prepend_path("MODULEPATH", "/${LMOD_PATH}/linux-centos7-x86_64/Core/oneapi/${ONEAPI_VER}")
