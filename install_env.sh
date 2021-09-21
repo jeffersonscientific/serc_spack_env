@@ -43,6 +43,10 @@ fi
 NUKE_ENV=1
 LMOD_PATH="`pwd`/spack/share/spack/lmod_${SPACK_ENV_NAME}"
 TCL_PATH="`pwd`/spack/share/spack/modules_${SPACK_ENV_NAME}"
+#
+# append module names with this. It is in the modules.yaml file, but we don't
+#  know how to get it from there, gracefully, yet.
+LMOD_SUFFIX="-yoda"
 # This is the general install script for SERC on the Sherlock HPC system @ Stanford.
 # 
 #set -x #debug
@@ -237,7 +241,7 @@ done
 
 #have spack regenerate module files:
 
-spack --config-scope=config_cees/  --config-scope=config_intel@${INTEL_VER} --config-scope=config_env_${SPACK_ENV_NAME}/ module lmod refresh --delete-tree -y
+spack --config-scope=config_cees/  --config-scope=config_intel@${INTEL_VER}/ --config-scope=config_env_${SPACK_ENV_NAME}/ module lmod refresh --delete-tree -y
 
 #
 # now, write wrapper modules for intel/ and oneapi/
@@ -264,10 +268,10 @@ whatis([[Short description : Wrapper module script to load intel-oneapi-compiler
 help([[Wrapper modle for intel-oneapi intel/ compilers ]])
 family("compiler")
 --
-depends_on("intel-oneapi-compilers")
+depends_on("intel-oneapi-compilers${LMOD_SUFFIX}/${INTEL_VER}")
 --
 -- NOTE: how do we script the module naming scheme?
-prepend_path("MODULEPATH", "/${LMOD_PATH}/linux-centos7-x86_64/Core/intel/${INTEL_VER}")
+prepend_path("MODULEPATH", "${LMOD_PATH}/linux-centos7-x86_64/intel/${INTEL_VER}")
 --
 -- TODO: might need/benefit from full paths?
 -- setenv("CC", "`which icc`")
@@ -287,10 +291,10 @@ whatis([[Short description : Wrapper module script to load intel-oneapi-compiler
 help([[Wrapper modle for intel-oneapi oneapi/ (LLVM based) compilers ]])
 family("compiler")
 --
-depends_on("intel-oneapi-compilers")
+depends_on("intel-oneapi-compilers${LMOD_SUFFIX}/${ONEAPI_VER}")
 --
 -- NOTE: how do we script the module naming scheme?
-prepend_path("MODULEPATH", "/${LMOD_PATH}/linux-centos7-x86_64/Core/oneapi/${ONEAPI_VER}")
+prepend_path("MODULEPATH", "${LMOD_PATH}/linux-centos7-x86_64/oneapi/${ONEAPI_VER}")
 --
 -- TODO: might need/benefit from full paths?
 -- setenv("CC", "`which icx`")
