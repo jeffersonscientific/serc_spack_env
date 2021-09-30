@@ -41,12 +41,13 @@ if [[ -z ${SPACK_ENV_NAME} ]]; then
 fi
 #
 NUKE_ENV=1
+# NOTE: might be good to define spack or SPACK=`pwd`/spack , then local paths, so we can write modules.yaml entries like $spack/share/spack/${SPACK_ENV_NAME}
 LMOD_PATH="`pwd`/spack/share/spack/lmod_${SPACK_ENV_NAME}"
 TCL_PATH="`pwd`/spack/share/spack/modules_${SPACK_ENV_NAME}"
 #
 # append module names with this. It is in the modules.yaml file, but we don't
 #  know how to get it from there, gracefully, yet.
-LMOD_SUFFIX="-beta"
+LMOD_SUFFIX="yoda"
 # This is the general install script for SERC on the Sherlock HPC system @ Stanford.
 # 
 #set -x #debug
@@ -148,10 +149,10 @@ cat > config_env_${SPACK_ENV_NAME}/modules.yaml <<EOF
 modules:
   default:
     roots:
-      lmod: ${LMOD_PATH}
-      tcl: ${TCL_PATH}
-      #lmod: \$spack/share/spack/lmod_${SPACK_ENV_NAME}
-      #tcl: \$spack/share/spack/modules_${SPACK_ENV_NAME}
+      #lmod: ${LMOD_PATH}
+      #tcl: ${TCL_PATH}
+      lmod: \$spack/share/spack/lmod_${SPACK_ENV_NAME}
+      tcl: \$spack/share/spack/modules_${SPACK_ENV_NAME}
 EOF
     #
     if [[ ! $?=0 ]]; then
@@ -250,8 +251,8 @@ spack --config-scope=config_cees/  --config-scope=config_intel@${INTEL_VER}/ --c
 spack unload gcc/
 spack load intel-oneapi-compilers
 #
-INTEL_MODULE_PATH=${LMOD_PATH}/linux-centos7-x86_64/Core/intel/${INTEL_VER}.lua
-ONEAPI_MODULE_PATH=${LMOD_PATH}/linux-centos7-x86_64/Core/oneapi/${ONEAPI_VER}.lua
+INTEL_MODULE_PATH=${LMOD_PATH}/linux-centos7-x86_64/Core/intel--${LMOD_SUFFIX}/${INTEL_VER}.lua
+ONEAPI_MODULE_PATH=${LMOD_PATH}/linux-centos7-x86_64/Core/oneapi--${LMOD_SUFFIX}/${ONEAPI_VER}.lua
 
 for pth in `dirname ${INTEL_MODULE_PATH}` `dirname ${ONEAPI_MODULE_PATH}`
 do
@@ -261,6 +262,7 @@ do
 done
 #
 cat > ${INTEL_MODULE_PATH} <<EOF
+-- -*- lua
 whatis([[Name : intel ]])
 whatis([[Version : ${INTEL_VER}]])
 whatis([[Target: x86_64]])
@@ -268,7 +270,7 @@ whatis([[Short description : Wrapper module script to load intel-oneapi-compiler
 help([[Wrapper modle for intel-oneapi intel/ compilers ]])
 family("compiler")
 --
-depends_on("intel-oneapi-compilers${LMOD_SUFFIX}/${INTEL_VER}")
+depends_on("intel-oneapi-compilers-${LMOD_SUFFIX}/${INTEL_VER}")
 --
 -- NOTE: how do we script the module naming scheme?
 prepend_path("MODULEPATH", "${LMOD_PATH}/linux-centos7-x86_64/intel/${INTEL_VER}")
@@ -284,6 +286,7 @@ setenv("F90", "ifort")
 EOF
 #
 cat > ${ONEAPI_MODULE_PATH} <<EOF
+-- -*- lua
 whatis([[Name : oneapi ]])
 whatis([[Version : ${ONEAPI_VER}]])
 whatis([[Target: x86_64]])
@@ -291,7 +294,7 @@ whatis([[Short description : Wrapper module script to load intel-oneapi-compiler
 help([[Wrapper modle for intel-oneapi oneapi/ (LLVM based) compilers ]])
 family("compiler")
 --
-depends_on("intel-oneapi-compilers${LMOD_SUFFIX}/${ONEAPI_VER}")
+depends_on("intel-oneapi-compilers-${LMOD_SUFFIX}/${ONEAPI_VER}")
 --
 -- NOTE: how do we script the module naming scheme?
 prepend_path("MODULEPATH", "${LMOD_PATH}/linux-centos7-x86_64/oneapi/${ONEAPI_VER}")
