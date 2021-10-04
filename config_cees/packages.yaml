@@ -6,6 +6,14 @@ packages:
     version: [3.8.9]
   berkeley-db:
     version: [18.1.40]
+  diffutils:
+    version: [3.7]
+  findutils:
+    version: [4.7.0]
+  gcc:
+    version: [11.2.0]
+    compiler:: [gcc@4.8.5]
+    target:: [x86_64_v3]
   gdbm:
     version: [1.18.1]
   readline:
@@ -17,9 +25,12 @@ packages:
     variants: +hypre+fftw+mumps+hdf5
   mpich:
     version: [3.3.2]
+  ucx:
+    variants: +cm +dc +ib-hw-tm +mlx5-dv +optimizations +pic +ud
   openmpi:
-    variants: +pmi +legacylaunchers schedulers=slurm fabrics=ucx,ofi
+    variants: +pmi +legacylaunchers +pmix schedulers=slurm fabrics=ucx,ofi
     version: [4.1.1]
+    compiler: [gcc@11.2.0, intel@19.0.0.117]
   proj:
     version: [7.2.1]
   geos:
@@ -36,6 +47,7 @@ packages:
     variants: +tls
   fftw:
     version: [3.3.9]
+    variants: +openmp
   hdf5:
     variants: ~cxx~debug+fortran+hl~java+mpi+shared~szip+threadsafe
     version: [1.10.7,1.12.0]
@@ -79,8 +91,11 @@ packages:
     version: [2021.2.0]
   intel-oneapi-mpi:
     version: [2021.2.0]
+    compiler:: [intel@2021.2.0, oneapi@2021.2.0, intel@19.0.0.117]
   intel-oneapi-compilers:
     version: [2021.2.0]
+    compiler:: [gcc@4.8.5]
+    target:: [x86_64_v3]
   intel-tbb:
     version: [2021.2.0]
   blitz:
@@ -89,13 +104,13 @@ packages:
     version: [2.5]
   # yoder: intel "incompatible with formal parameter error"
   tar:
-    version: [1.34]
+    version: [1.32]
   m4:
-    version: [1.4.19]
+    version: [1.4.17]
   gettext:
     version: [0.21]
   all:
-    compiler: [gcc@11.2.0, intel@21.3.0]
+    compiler: [gcc@11.2.0, intel@21.2.0, intel@19.0.0.117, oneapi@2021.2.0]
     variants: build_type=Release +mpi
     providers:
       mpi: [openmpi, mpich, intel-oneapi-mpi]
