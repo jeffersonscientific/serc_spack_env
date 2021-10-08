@@ -1,1 +1,0 @@
-/home/groups/s-ees/share/spack_sw/cees/spack/opt/spack/linux-centos7-x86_64/gcc-4.8.5/mpfr-4.1.0-vcgbujto4e3p23rpqg5ifecvifxotjg5/share/doc/mpfr/examples/version.c
