@@ -1,0 +1,1 @@
+/home/groups/s-ees/share/spack_sw/cees/spack/opt/spack/linux-centos7-zen2/gcc-11.2.0/libjpeg-turbo-2.1.0-etcstuqnjhtyeeqxuvh3iemoalfbtkw2/share/doc/libjpeg-turbo/LICENSE.md

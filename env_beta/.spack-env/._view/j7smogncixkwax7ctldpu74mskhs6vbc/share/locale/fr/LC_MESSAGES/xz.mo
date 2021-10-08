@@ -1,0 +1,1 @@
+/home/groups/s-ees/share/spack_sw/cees/spack/opt/spack/linux-centos7-zen2/gcc-11.2.0/xz-5.2.5-cqrfyf3ncofyn5nooyqes7366rxi2kjv/share/locale/fr/LC_MESSAGES/xz.mo
