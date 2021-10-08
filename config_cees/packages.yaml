@@ -113,7 +113,7 @@ packages:
     compiler: [gcc@11.2.0, intel@21.2.0, intel@19.0.0.117, oneapi@2021.2.0]
     variants: build_type=Release +mpi
     providers:
-      mpi: [openmpi, mpich, intel-oneapi-mpi]
+      mpi: [ mpich, openmpi, intel-oneapi-mpi]
       blas: [openblas]
       lapack: [openblas]
       gl: [osmesa+opengl]
