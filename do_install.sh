@@ -32,5 +32,5 @@ fi
 #
 spack env activate $SPK_ENV
 spack concretize --force
-spack install $2
+spack install -y $2
 

@@ -1,5 +1,5 @@
 # This is a Spack Environment file.
-# env matrix_dev
+# env beta2
 #
 # It describes a set of packages to be installed, along with
 # configuration settings.
@@ -8,19 +8,19 @@ spack:
   definitions:
   - compilers_core: [gcc@4.8.5 target=x86_64]
   - compilers_gcc: [gcc@11.2.0]
-  - compilers_intel: [intel@2021.2.0, oneapi@2021.2.0]
+  - compilers_intel: [intel@2021.4.0, oneapi@2021.4.0]
   - compilers_intel19: [intel@19.0.0.117]
   
   #
   #
-  - mpis_gcc: [mpich, openmpi]
+  - mpis_gcc: [mpich, openmpi, intel-oneapi-mpi]
   - mpis_intel: [intel-oneapi-mpi, mpich]
   - packages_compilers: [gcc, intel-oneapi-compilers]
   
   #
   #
   - packages_serial_gcc: [proj, swig, geos, maven, intel-oneapi-tbb, intel-oneapi-mkl,
-      ncurses, libdwarf, tar, ucx, cuda]
+      ncurses, libdwarf, tar, ucx, cuda, font-util]
   - packages_serial_intel: [proj, swig, geos, maven, intel-oneapi-tbb, intel-oneapi-mkl,
       libdwarf, tar, cuda]
   
@@ -30,6 +30,11 @@ spack:
   #
   - packages_mpi: [hdf5, netcdf-c, netcdf-fortran, netcdf-cxx4, cdo, parallel-netcdf,
       petsc, fftw, parallelio, cgal]
+  - packages_mpi_gcc:
+    - $packages_mpi
+    - paraview
+  - packages_mpi_intel:
+    - $packages_mpi
   #
   specs:
   
@@ -53,19 +58,22 @@ spack:
   #
   # MPI installs: GCC
   - matrix:
-    - [$packages_mpi]
+    - [$packages_mpi_gcc]
     - [$^mpis_gcc]
     - [$%compilers_gcc]
   # MPI installs: Intel
   - matrix:
-    - [$packages_mpi]
+    - [$packages_mpi_intel]
     - [$^mpis_intel]
     - [$%compilers_intel]
+  #
   #
   view: true
   packages:
     findutils:
       version: [4.8.0]
+    font-util:
+      version: [1.3.2]
     perl:
       version: [5.32.1]
     python:
@@ -124,6 +132,9 @@ spack:
       version: [1.12.1]
     parallelio:
       version: [252]
+    paraview:
+      version: [5.9.1]
+      variants: [+hdf5 +python3]
     muparser:
       version: [2.2.6.1]
     maven:
@@ -147,17 +158,17 @@ spack:
     xios:
       version: [2.5]
     intel-oneapi-tbb:
-      version: [2021.2.0]
+      version: [2021.4.0]
     intel-oneapi-mkl:
-      version: [2021.2.0]
+      version: [2021.4.0]
     intel-oneapi-mpi:
-      version: [2021.2.0]
+      version: [2021.4.0]
     intel-oneapi-compilers:
-      version: [2021.2.0]
+      version: [2021.4.0]
       compiler: [gcc@4.8.5]
       target: [x86_64_v3]
     intel-tbb:
-      version: [2021.2.0]
+      version: [2021.4.0]
     blitz:
       version: [1.0.2]
     tar:
@@ -167,7 +178,7 @@ spack:
     gettext:
       version: [0.21]
     all:
-      compiler: [gcc@11.2.0, intel@2021.2.0, oneapi@2021.2.0, intel@19.0.0.117]
+      compiler: [gcc@11.2.0, intel@2021.4.0, oneapi@2021.4.0]
       variants: build_type=Release +mpi
       providers:
         mpi: [mpich, openmpi, intel-oneapi-mpi]
@@ -194,3 +205,46 @@ spack:
       permissions:
         read: world
         write: user
+  modules:
+    default:
+      roots:
+        lmod: $spack/share/spack/lmod_skylake_skylake-beta
+        tcl: $spack/share/spack/modules_skylake_skylake-beta
+      'enable:':
+      - lmod
+      lmod:
+        core_compilers:
+        - gcc@4.8.5
+        hierarchy:
+        - mpi
+        - compiler
+        'hash_length:': 5
+        projections:
+          all: '{name}-cees-beta/{version}'
+          ^mpi: '{name}-cees-beta/{^mpi.name}-{version}'
+    prefix_inspections:
+      bin:
+      - PATH
+      lib:
+      - LIBRARY_PATH
+      - LD_LIBRARY_PATH
+      lib/pkgconfig:
+      - PKG_CONFIG_PATH
+      share/pkgconfig:
+      - PKG_CONFIG_PATH
+      include:
+      - CPATH
+  #
+  config:
+    install_missing_compilers: false
+    checksum: true
+    deprecated: false
+    dirty: false
+    ccache: false
+    concretizer: original
+    shared_linking: rpath
+    build_stage:
+    - /scratch/${user}/spack_stage
+    - $tempdir/${user}/spack-stage
+    - ~/.spack/stage
+
