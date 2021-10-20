@@ -10,7 +10,6 @@ spack:
   - compilers_gcc: [gcc@11.2.0]
   - compilers_intel: [intel@2021.4.0, oneapi@2021.4.0]
   - compilers_intel19: [intel@19.0.0.117]
-  
   #
   #
   - mpis_gcc: [mpich, openmpi, intel-oneapi-mpi]
@@ -37,7 +36,6 @@ spack:
     - $packages_mpi
   #
   specs:
-  
   # compilers:
   - matrix:
     - [$packages_compilers]
@@ -157,16 +155,20 @@ spack:
       version: [9.2.0]
     xios:
       version: [2.5]
+    gcc:
+      version: [11.2.0]
+      compiler: [gcc@4.8.5]
+      target: [x86_64_v3]
+    intel-oneapi-compilers:
+      version: [2021.4.0]
+      compiler: [gcc@4.8.5]
+      target: [x86_64_v3]
     intel-oneapi-tbb:
       version: [2021.4.0]
     intel-oneapi-mkl:
       version: [2021.4.0]
     intel-oneapi-mpi:
       version: [2021.4.0]
-    intel-oneapi-compilers:
-      version: [2021.4.0]
-      compiler: [gcc@4.8.5]
-      target: [x86_64_v3]
     intel-tbb:
       version: [2021.4.0]
     blitz:
@@ -236,7 +238,7 @@ spack:
       - CPATH
   #
   config:
-    install_missing_compilers: false
+    install_missing_compilers: true
     checksum: true
     deprecated: false
     dirty: false
